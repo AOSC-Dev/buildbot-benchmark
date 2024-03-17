@@ -148,13 +148,7 @@ abwarn() { echo -e "[\e[33mWARN\e[0m]: \e[1m$*\e[0m"; }
 aberr()  { echo -e "[\e[31mERROR\e[0m]: \e[1m$*\e[0m"; exit 1; }
 abinfo() { echo -e "[\e[96mINFO\e[0m]: \e[1m$*\e[0m"; }
 
-# Autobuild3 dpkg handler functions.
-sys_detect(){
-    . /etc/os-release
-    if [[ "$ID" = "aosc" ]]; then
-        export AOSC=1
-    fi
-}
+# Autobuild dpkg handler functions.
 pm_exists(){
     for p in "$@"; do
         dpkg $PM_ROOTPARAM -l "$p" | grep ^ii >/dev/null 2>&1 || return 1
