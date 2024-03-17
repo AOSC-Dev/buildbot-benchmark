@@ -161,6 +161,12 @@ pm_repoinstall(){
     apt-get install "$@" --yes
 }
 
+# System detection logic.
+sys_detect() {
+    . /etc/os-release
+    export $ID
+}
+
 echo -e "
 ******************************************************************************
 ----------------    BUILDBOT BENCHMARK (version $BENCHVER)    -----------------
@@ -174,7 +180,8 @@ System memory: $(( $(cat /proc/meminfo | grep MemTotal | awk '{ print $2 }') / 1
 "
 
 abinfo "(1/6) Preparing to benchmark Buildbot: Fetching dependencies ..."
-if [[ "AOSC" = "1" ]]; then
+sys_detect
+if [[ "$ID" = "aosc" ]]; then
     if ! pm_exists $DEPENDENCIES; then
         abinfo "Build or runtime dependencies not satisfied, now fetching needed packages."
         pm_repoupdate || \
@@ -183,10 +190,11 @@ if [[ "AOSC" = "1" ]]; then
             aberr "Failed to install needed dependencies: $?"
     fi
 else
-    abwarn "Non-AOSC OS host detected, you are on your own."
-    abinfo "Usually, you would like to install a meta package for basic"
-    abinfo "development tools, such as build-essential for Debian/Ubuntu,"
-    abinfo "or base-devel for Arch Linux."
+    abwarn "Non-AOSC OS host detected, you are on your own!
+
+    Usually, you would want to install a meta package for basic development
+    tools, such as build-essential for Debian/Ubuntu, or base-devel for
+    Arch Linux.\n"
 fi
 
 abinfo "(2/6) Preparing to benchmark Buildbot: Downloading LLVM (version $LLVMVER) ..."
