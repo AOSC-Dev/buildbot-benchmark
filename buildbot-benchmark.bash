@@ -141,6 +141,7 @@ CONFIG_OPTS=(
     '-DPY_PYGMENTS_FOUND:BOOL=OFF'
     '-DPY_PYGMENTS_LEXERS_C_CPP_FOUND:BOOL=OFF'
     '-DPY_YAML_FOUND:BOOL=OFF'
+    '-DLLVM_ENABLE_LTO:BOOL=ON'
 )
 
 # Autobuild output formatter functions.
