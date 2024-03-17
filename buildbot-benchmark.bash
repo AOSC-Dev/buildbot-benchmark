@@ -14,16 +14,22 @@ aberr()  { echo -e "[\e[31mERROR\e[0m]: \e[1m$*\e[0m"; exit 1; }
 abinfo() { echo -e "[\e[96mINFO\e[0m]: \e[1m$*\e[0m"; }
 
 # Autobuild3 dpkg handler functions.
+sys_detect(){
+    . /etc/os-release
+    if [[ "$ID" = "aosc" ]]; then
+        export AOSC=1
+    fi
+}
 pm_exists(){
-        for p in "$@"; do
-                dpkg $PM_ROOTPARAM -l "$p" | grep ^ii >/dev/null 2>&1 || return 1
-        done
+    for p in "$@"; do
+        dpkg $PM_ROOTPARAM -l "$p" | grep ^ii >/dev/null 2>&1 || return 1
+    done
 }
 pm_repoupdate(){
-        apt-get update
+    apt-get update
 }
 pm_repoinstall(){
-        apt-get install "$@" --yes
+    apt-get install "$@" --yes
 }
 
 echo -e "
@@ -33,18 +39,25 @@ echo -e "
 
 Benchmark: Building LLVM runtime (version $LLVMVER), using Ninja, LTO enabled.
 
-System architecture: $(dpkg --print-architecture)
+System architecture: $(uname -m)
 System processors: $(nproc)
 System memory: $(( $(cat /proc/meminfo | grep MemTotal | awk '{ print $2 }') / 1024 / 1024 )) GiB
 "
 
 abinfo "(1/6) Preparing to benchmark Buildbot: Fetching dependencies ..."
-if ! pm_exists $DEPENDENCIES; then
-    abinfo "Build or runtime dependencies not satisfied, now fetching needed packages."
-    pm_repoupdate || \
-        aberr "Failed to refresh repository: $?"
-    pm_repoinstall $DEPENDENCIES || \
-        aberr "Failed to install needed dependencies: $?"
+if [[ "AOSC" = "1" ]]; then
+    if ! pm_exists $DEPENDENCIES; then
+        abinfo "Build or runtime dependencies not satisfied, now fetching needed packages."
+        pm_repoupdate || \
+            aberr "Failed to refresh repository: $?"
+        pm_repoinstall $DEPENDENCIES || \
+            aberr "Failed to install needed dependencies: $?"
+    fi
+else
+    abwarn "Non-AOSC OS host detected, you are on your own."
+    abinfo "Usually, you would like to install a meta package for basic"
+    abinfo "development tools, such as build-essential for Debian/Ubuntu,"
+    abinfo "or base-devel for Arch Linux."
 fi
 
 abinfo "(2/6) Preparing to benchmark Buildbot: Downloading LLVM (version $LLVMVER) ..."
