@@ -224,4 +224,5 @@ cmake .. \
 abinfo "(6/6) Benchmarking Buildbot: Building LLVM ..."
 time ninja 2>> benchmark.log || \
     aberr "Failed to build LLVM: $?."
+
 unset LC_ALL LANG
