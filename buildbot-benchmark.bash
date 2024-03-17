@@ -3,7 +3,7 @@ set -e
 
 # Basic definitions.
 BENCHVER=20230227
-LLVMVER=15.0.7
+LLVMVER=18.1.1
 LLVMURL="https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVMVER/llvm-project-$LLVMVER.src.tar.xz"
 LLVMDIR="$(basename $LLVMURL | rev | cut -f3- -d'.' | rev)"
 DEPENDENCIES="devel-base"
