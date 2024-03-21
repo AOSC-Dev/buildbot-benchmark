@@ -10,7 +10,7 @@ Usage
 Run the benchmark by executing the script:
 
 ```
-bash ./buildbot-benchmark.bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/AOSC-Dev/buildbot-benchmark/master/buildbot-benchmark.bash)"
 ```
 
 Collect "Real" time output from `time` output:
