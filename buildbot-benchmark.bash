@@ -7,6 +7,7 @@ LLVMVER=18.1.1
 LLVMURL="https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVMVER/llvm-project-$LLVMVER.src.tar.xz"
 LLVMDIR="$(basename $LLVMURL | rev | cut -f3- -d'.' | rev)"
 DEPENDENCIES="devel-base"
+BUILDLOGFILE="$(pwd)/benchmark.log"
 
 # LLVM configuration options.
 CONFIG_OPTS=(
@@ -199,7 +200,7 @@ else
 fi
 
 abinfo "(2/6) Preparing to benchmark Buildbot: Downloading LLVM (version $LLVMVER) ..."
-wget -c $LLVMURL 2> benchmark.log || \
+wget -c $LLVMURL 2> $BUILDLOGFILE || \
     aberr "Failed to download LLVM: $?."
 
 abinfo "(3/6) Preparing to benchmark Buildbot: Unpacking LLVM (version $LLVMVER) ..."
@@ -219,11 +220,11 @@ export LANG=C
 abinfo "(5/6) Preparing to benchmark Buildbot: Configuring LLVM (version $LLVMVER) ..."
 cmake .. \
     "${CONFIG_OPTS[@]}" \
-    -GNinja >> benchmark.log 2>&1 || \
+    -GNinja >> $BUILDLOGFILE 2>&1 || \
         aberr "Failed to configure LLVM: $?."
 
 abinfo "(6/6) Benchmarking Buildbot: Building LLVM ..."
-time ninja 2>> benchmark.log || \
+time ninja 2>> $BUILDLOGFILE || \
     aberr "Failed to build LLVM: $?."
 
 unset LC_ALL LANG
