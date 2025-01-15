@@ -195,7 +195,7 @@ else
     abwarn "Non-AOSC OS host detected, you are on your own!
 
     Usually, you would want to install a meta package for basic development
-    tools, such as build-essential for Debian/Ubuntu, or base-devel for
+    tools, such as ninja, and build-essential for Debian/Ubuntu, or base-devel for
     Arch Linux.\n"
 fi
 
