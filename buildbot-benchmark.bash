@@ -11,6 +11,7 @@ BUILDLOGFILE="$(pwd)/benchmark.log"
 
 # LLVM configuration options.
 CONFIG_OPTS=(
+    '-DCMAKE_CXX_FLAGS=-include cstdint' # See https://gcc.gnu.org/gcc-15/porting_to.html#header-dep-changes
     '-DCMAKE_BUILD_TYPE:STRING=Release'
     '-DBENCHMARK_BUILD_32_BITS:BOOL=OFF'
     '-DBENCHMARK_DOWNLOAD_DEPENDENCIES:BOOL=OFF'
